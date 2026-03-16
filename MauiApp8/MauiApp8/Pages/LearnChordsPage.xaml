@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiApp8.Pages.LearnChordsPage"
+             Title="Learn Chords"
+             BackgroundColor="Transparent">
+
+    <Grid>
+        <!-- Background Image -->
+        <Image Source="guitar_background.jpg"
+               Aspect="AspectFill"
+               Opacity="0.9"/>
+
+        <!-- Orange Overlay -->
+        <BoxView Color="{StaticResource AppOrange}"
+                 Opacity="0.7"/>
+
+        <!-- Main Content -->
+        <Grid RowDefinitions="Auto,Auto,*"
+              Padding="20">
+
+            <!-- Back Button -->
+            <Button Grid.Row="0"
+                    Text="← Back"
+                    BackgroundColor="Transparent"
+                    TextColor="White"
+                    FontSize="18"
+                    HorizontalOptions="Start"
+                    AutomationId="BackButton"
+                    SemanticProperties.Description="Go back to home screen"
+                    Clicked="OnBackClicked"/>
+
+            <!-- Title -->
+            <Label Grid.Row="0"
+                   Text="Choose Difficulty"
+                   FontSize="36"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   Margin="0,40,0,0"/>
+
+            <!-- Difficulty Buttons -->
+            <VerticalStackLayout Grid.Row="1"
+                               Spacing="20"
+                               Margin="0,40,0,20">
+
+                <!-- Easy Button -->
+                <Frame BackgroundColor="{StaticResource DifficultyEasy}"
+                       CornerRadius="20"
+                       Padding="0"
+                       HasShadow="True"
+                       HeightRequest="80">
+                    <Grid Padding="25,0"
+                          ColumnDefinitions="Auto,*,Auto"
+                          ColumnSpacing="15">
+                        <Label Grid.Column="0"
+                               Text="😊"
+                               FontSize="40"
+                               VerticalOptions="Center"/>
+                        <Label Grid.Column="1"
+                               Text="Easy"
+                               FontSize="28"
+                               FontAttributes="Bold"
+                               TextColor="#2D5016"
+                               VerticalOptions="Center"/>
+                        <Label Grid.Column="2"
+                               Text="►"
+                               FontSize="32"
+                               TextColor="#2D5016"
+                               VerticalOptions="Center"/>
+                    </Grid>
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnEasyTapped"/>
+                    </Frame.GestureRecognizers>
+                </Frame>
+
+                <!-- Medium Button -->
+                <Frame BackgroundColor="{StaticResource DifficultyMedium}"
+                       CornerRadius="20"
+                       Padding="0"
+                       HasShadow="True"
+                       HeightRequest="80">
+                    <Grid Padding="25,0"
+                          ColumnDefinitions="Auto,*,Auto"
+                          ColumnSpacing="15">
+                        <Label Grid.Column="0"
+                               Text="🤔"
+                               FontSize="40"
+                               VerticalOptions="Center"/>
+                        <Label Grid.Column="1"
+                               Text="Medium"
+                               FontSize="28"
+                               FontAttributes="Bold"
+                               TextColor="#5C4B00"
+                               VerticalOptions="Center"/>
+                        <Label Grid.Column="2"
+                               Text="►"
+                               FontSize="32"
+                               TextColor="#5C4B00"
+                               VerticalOptions="Center"/>
+                    </Grid>
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnMediumTapped"/>
+                    </Frame.GestureRecognizers>
+                </Frame>
+
+                <!-- Hard Button -->
+                <Frame BackgroundColor="{StaticResource DifficultyHard}"
+                       CornerRadius="20"
+                       Padding="0"
+                       HasShadow="True"
+                       HeightRequest="80">
+                    <Grid Padding="25,0"
+                          ColumnDefinitions="Auto,*,Auto"
+                          ColumnSpacing="15">
+                        <Label Grid.Column="0"
+                               Text="🔥"
+                               FontSize="40"
+                               VerticalOptions="Center"/>
+                        <Label Grid.Column="1"
+                               Text="Hard"
+                               FontSize="28"
+                               FontAttributes="Bold"
+                               TextColor="#4A0000"
+                               VerticalOptions="Center"/>
+                        <Label Grid.Column="2"
+                               Text="►"
+                               FontSize="32"
+                               TextColor="#4A0000"
+                               VerticalOptions="Center"/>
+                    </Grid>
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnHardTapped"/>
+                    </Frame.GestureRecognizers>
+                </Frame>
+
+            </VerticalStackLayout>
+
+            <!-- Chords List -->
+            <ScrollView Grid.Row="2">
+                <VerticalStackLayout x:Name="ChordsContainer"
+                                   Spacing="15"
+                                   Padding="0,0,0,20">
+
+                    <!-- Activity Indicator (Loading) -->
+                    <ActivityIndicator x:Name="LoadingIndicator"
+                                     IsRunning="False"
+                                     IsVisible="False"
+                                     Color="White"
+                                     HeightRequest="50"
+                                     Margin="0,20,0,0"/>
+
+                    <!-- Loading Skeleton Placeholders -->
+                    <VerticalStackLayout x:Name="SkeletonContainer"
+                                       IsVisible="False"
+                                       Spacing="15"
+                                       Margin="0,10,0,0">
+                        <Frame BackgroundColor="{StaticResource AppCream}" Opacity="0.5" CornerRadius="15" HeightRequest="70" HasShadow="False"/>
+                        <Frame BackgroundColor="{StaticResource AppCream}" Opacity="0.4" CornerRadius="15" HeightRequest="70" HasShadow="False"/>
+                        <Frame BackgroundColor="{StaticResource AppCream}" Opacity="0.3" CornerRadius="15" HeightRequest="70" HasShadow="False"/>
+                    </VerticalStackLayout>
+
+                    <!-- No Chords / Error Message -->
+                    <VerticalStackLayout x:Name="MessageContainer"
+                                       IsVisible="True"
+                                       Spacing="15"
+                                       HorizontalOptions="Center"
+                                       Margin="0,40,0,0">
+                        <Label x:Name="NoChordsLabel"
+                               Text="Select a difficulty level to see chords"
+                               TextColor="White"
+                               FontSize="16"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"/>
+                        <Button x:Name="RetryButton"
+                                Text="Retry"
+                                BackgroundColor="{StaticResource AppBrown}"
+                                TextColor="White"
+                                CornerRadius="12"
+                                FontSize="16"
+                                Padding="30,10"
+                                HorizontalOptions="Center"
+                                IsVisible="False"
+                                Clicked="OnRetryClicked"/>
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </ScrollView>
+
+        </Grid>
+    </Grid>
+
+</ContentPage>

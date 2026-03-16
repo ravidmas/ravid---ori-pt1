@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiApp8.Pages.LeaderboardPage"
+             BackgroundColor="Transparent">
+
+    <Grid>
+        <Image Source="guitar_background.jpg" Aspect="AspectFill" Opacity="1"/>
+        <BoxView Color="{StaticResource AppOrange}" Opacity="0.7"/>
+
+        <Grid RowDefinitions="Auto,Auto,*" Padding="20">
+
+            <!-- Header -->
+            <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="0,50,0,10">
+                <Button Grid.Column="0" Text="&#x2190; Back" TextColor="White" FontSize="18"
+                        BackgroundColor="Transparent" AutomationId="BackButton" Clicked="OnBackClicked"/>
+                <Label Grid.Column="1" Text="&#x1F3C6; Leaderboard" FontSize="28" FontAttributes="Bold"
+                       TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Grid>
+
+            <!-- Timeframe Tabs -->
+            <Grid Grid.Row="1" ColumnDefinitions="*,*,*" ColumnSpacing="8" Margin="0,5,0,10">
+                <Button x:Name="WeekTab" Text="This Week"
+                        BackgroundColor="{StaticResource AppBrown}" TextColor="White"
+                        CornerRadius="20" FontSize="13" Opacity="0.7" Clicked="OnWeekTabClicked"/>
+                <Button x:Name="MonthTab" Grid.Column="1" Text="This Month"
+                        BackgroundColor="{StaticResource AppBrown}" TextColor="White"
+                        CornerRadius="20" FontSize="13" Opacity="0.7" Clicked="OnMonthTabClicked"/>
+                <Button x:Name="AllTimeTab" Grid.Column="2" Text="All Time"
+                        BackgroundColor="{StaticResource AppCream}" TextColor="{StaticResource AppDarkBrown}"
+                        FontAttributes="Bold" CornerRadius="20" FontSize="13" Clicked="OnAllTimeTabClicked"/>
+            </Grid>
+
+            <!-- Leaderboard Content -->
+            <ScrollView Grid.Row="2">
+                <VerticalStackLayout Spacing="10" Padding="0,0,0,30">
+
+                    <!-- Your Score Card -->
+                    <Frame BackgroundColor="{StaticResource AppCream}" CornerRadius="15" Padding="15" HasShadow="True">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                            <Label Grid.Column="0" x:Name="YourAvatarLabel" Text="&#x1F3B8;" FontSize="36"
+                                   VerticalOptions="Center"/>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                <Label Text="Your Score" FontSize="13" TextColor="{StaticResource Gray500}"/>
+                                <Label x:Name="YourScoreLabel" Text="0" FontSize="26" FontAttributes="Bold"
+                                       TextColor="{StaticResource AppBrown}"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2" x:Name="YourRankLabel" Text="#-" FontSize="22"
+                                   FontAttributes="Bold" TextColor="{StaticResource AppOrange}"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                    </Frame>
+
+                    <!-- Loading -->
+                    <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" IsVisible="False"
+                                     Color="White" HeightRequest="40"/>
+
+                    <!-- Leaderboard Entries -->
+                    <VerticalStackLayout x:Name="EntriesContainer" Spacing="8"/>
+
+                    <!-- Offline Message -->
+                    <Label x:Name="OfflineLabel" IsVisible="False"
+                           Text="Could not connect to leaderboard server. Showing your local score."
+                           TextColor="White" FontSize="13" HorizontalTextAlignment="Center"
+                           Opacity="0.7" Margin="0,10,0,0"/>
+
+                </VerticalStackLayout>
+            </ScrollView>
+
+        </Grid>
+    </Grid>
+
+</ContentPage>

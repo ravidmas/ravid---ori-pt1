@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiApp8.Pages.LessonDetailPage"
+             BackgroundColor="Transparent">
+
+    <Grid>
+        <!-- Background Image -->
+        <Image Source="guitar_background.jpg"
+               Aspect="AspectFill"
+               Opacity="1"/>
+
+        <!-- Orange Overlay -->
+        <BoxView Color="{StaticResource AppOrange}"
+                 Opacity="0.7"/>
+
+        <!-- Main Content -->
+        <Grid RowDefinitions="Auto,*"
+              Padding="20">
+
+            <!-- Header -->
+            <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="0,50,0,10">
+                <Button Grid.Column="0"
+                        Text="&#x2190; Back"
+                        TextColor="White"
+                        FontSize="18"
+                        BackgroundColor="Transparent"
+                        AutomationId="BackButton"
+                        Clicked="OnBackClicked"/>
+                <Label Grid.Column="1"
+                       x:Name="TitleLabel"
+                       Text="Lesson"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+            </Grid>
+
+            <!-- Lesson Content -->
+            <ScrollView Grid.Row="1">
+                <VerticalStackLayout Spacing="15" Padding="0,10,0,30">
+
+                    <!-- Description Card -->
+                    <Frame BackgroundColor="{StaticResource AppCream}"
+                           CornerRadius="15"
+                           Padding="20"
+                           HasShadow="True">
+                        <Label x:Name="DescriptionLabel"
+                               Text=""
+                               FontSize="16"
+                               TextColor="{StaticResource AppDarkBrown}"
+                               LineHeight="1.4"/>
+                    </Frame>
+
+                    <!-- Steps Header -->
+                    <Label Text="Steps"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           Margin="0,10,0,0"/>
+
+                    <!-- Steps Container (populated in code) -->
+                    <VerticalStackLayout x:Name="StepsContainer"
+                                       Spacing="10"/>
+
+                    <!-- Tip Card -->
+                    <Frame BackgroundColor="{StaticResource AppBrown}"
+                           CornerRadius="15"
+                           Padding="20"
+                           HasShadow="True"
+                           Margin="0,10,0,0">
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="&#x1F4A1; Pro Tip"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="White"/>
+                            <Label Text="Practice each step slowly before moving on. Quality repetition beats rushing through lessons!"
+                                   FontSize="14"
+                                   TextColor="{StaticResource AppCream}"
+                                   LineHeight="1.3"/>
+                        </VerticalStackLayout>
+                    </Frame>
+
+                </VerticalStackLayout>
+            </ScrollView>
+
+        </Grid>
+    </Grid>
+
+</ContentPage>

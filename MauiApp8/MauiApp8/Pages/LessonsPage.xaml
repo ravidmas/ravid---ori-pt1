@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiApp8.Pages.LessonsPage"
+             BackgroundColor="Transparent">
+
+    <Grid>
+        <!-- Background Image -->
+        <Image Source="guitar_background.jpg"
+               Aspect="AspectFill"
+               Opacity="1"/>
+
+        <!-- Orange Overlay -->
+        <BoxView Color="{StaticResource AppOrange}"
+                 Opacity="0.7"/>
+
+        <!-- Main Content -->
+        <Grid RowDefinitions="Auto,*"
+              Padding="20">
+
+            <!-- Header -->
+            <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="0,50,0,10">
+                <Button Grid.Column="0"
+                        Text="&#x2190; Back"
+                        TextColor="White"
+                        FontSize="18"
+                        BackgroundColor="Transparent"
+                        AutomationId="BackButton"
+                        SemanticProperties.Description="Go back to home screen"
+                        Clicked="OnBackClicked"/>
+                <Label Grid.Column="1"
+                       Text="Lessons"
+                       FontSize="32"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+            </Grid>
+
+            <!-- Lessons List -->
+            <ScrollView Grid.Row="1">
+                <VerticalStackLayout x:Name="LessonsContainer"
+                                   Spacing="15"
+                                   Padding="0,10,0,30">
+
+                    <!-- Beginner Section -->
+                    <Label Text="Beginner"
+                           FontSize="22"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           Margin="0,10,0,5"/>
+
+                    <!-- Lesson 1: How to Hold a Guitar -->
+                    <Frame BackgroundColor="{StaticResource AppCream}"
+                           CornerRadius="15"
+                           Padding="15"
+                           HasShadow="True">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                            <Frame Grid.Column="0"
+                                   BackgroundColor="{StaticResource DifficultyEasy}"
+                                   CornerRadius="10"
+                                   WidthRequest="50"
+                                   HeightRequest="50"
+                                   Padding="0"
+                                   HasShadow="False">
+                                <Label Text="1"
+                                       FontSize="24"
+                                       FontAttributes="Bold"
+                                       TextColor="White"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </Frame>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                <Label Text="How to Hold a Guitar"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource AppDarkBrown}"/>
+                                <Label Text="Proper posture and hand position"
+                                       FontSize="13"
+                                       TextColor="{StaticResource Gray500}"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2"
+                                   Text="&#x25B6;"
+                                   FontSize="24"
+                                   TextColor="{StaticResource AppBrown}"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnLesson1Tapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+
+                    <!-- Lesson 2: Your First Chord (Em) -->
+                    <Frame BackgroundColor="{StaticResource AppCream}"
+                           CornerRadius="15"
+                           Padding="15"
+                           HasShadow="True">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                            <Frame Grid.Column="0"
+                                   BackgroundColor="{StaticResource DifficultyEasy}"
+                                   CornerRadius="10"
+                                   WidthRequest="50"
+                                   HeightRequest="50"
+                                   Padding="0"
+                                   HasShadow="False">
+                                <Label Text="2"
+                                       FontSize="24"
+                                       FontAttributes="Bold"
+                                       TextColor="White"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </Frame>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                <Label Text="Your First Chord (Em)"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource AppDarkBrown}"/>
+                                <Label Text="Learn the easiest guitar chord"
+                                       FontSize="13"
+                                       TextColor="{StaticResource Gray500}"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2"
+                                   Text="&#x25B6;"
+                                   FontSize="24"
+                                   TextColor="{StaticResource AppBrown}"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnLesson2Tapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+
+                    <!-- Lesson 3: Basic Strumming -->
+                    <Frame BackgroundColor="{StaticResource AppCream}"
+                           CornerRadius="15"
+                           Padding="15"
+                           HasShadow="True">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                            <Frame Grid.Column="0"
+                                   BackgroundColor="{StaticResource DifficultyEasy}"
+                                   CornerRadius="10"
+                                   WidthRequest="50"
+                                   HeightRequest="50"
+                                   Padding="0"
+                                   HasShadow="False">
+                                <Label Text="3"
+                                       FontSize="24"
+                                       FontAttributes="Bold"
+                                       TextColor="White"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </Frame>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                <Label Text="Basic Strumming Patterns"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource AppDarkBrown}"/>
+                                <Label Text="Down-up strumming rhythm basics"
+                                       FontSize="13"
+                                       TextColor="{StaticResource Gray500}"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2"
+                                   Text="&#x25B6;"
+                                   FontSize="24"
+                                   TextColor="{StaticResource AppBrown}"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnLesson3Tapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+
+                    <!-- Intermediate Section -->
+                    <Label Text="Intermediate"
+                           FontSize="22"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           Margin="0,20,0,5"/>
+
+                    <!-- Lesson 4: Chord Transitions -->
+                    <Frame BackgroundColor="{StaticResource AppCream}"
+                           CornerRadius="15"
+                           Padding="15"
+                           HasShadow="True">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                            <Frame Grid.Column="0"
+                                   BackgroundColor="{StaticResource DifficultyMedium}"
+                                   CornerRadius="10"
+                                   WidthRequest="50"
+                                   HeightRequest="50"
+                                   Padding="0"
+                                   HasShadow="False">
+                                <Label Text="4"
+                                       FontSize="24"
+                                       FontAttributes="Bold"
+                                       TextColor="White"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </Frame>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                <Label Text="Smooth Chord Transitions"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource AppDarkBrown}"/>
+                                <Label Text="Switch between chords quickly"
+                                       FontSize="13"
+                                       TextColor="{StaticResource Gray500}"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2"
+                                   Text="&#x25B6;"
+                                   FontSize="24"
+                                   TextColor="{StaticResource AppBrown}"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnLesson4Tapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+
+                    <!-- Lesson 5: Barre Chords -->
+                    <Frame BackgroundColor="{StaticResource AppCream}"
+                           CornerRadius="15"
+                           Padding="15"
+                           HasShadow="True">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                            <Frame Grid.Column="0"
+                                   BackgroundColor="{StaticResource DifficultyHard}"
+                                   CornerRadius="10"
+                                   WidthRequest="50"
+                                   HeightRequest="50"
+                                   Padding="0"
+                                   HasShadow="False">
+                                <Label Text="5"
+                                       FontSize="24"
+                                       FontAttributes="Bold"
+                                       TextColor="White"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </Frame>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                <Label Text="Introduction to Barre Chords"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource AppDarkBrown}"/>
+                                <Label Text="Master the F chord and beyond"
+                                       FontSize="13"
+                                       TextColor="{StaticResource Gray500}"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2"
+                                   Text="&#x25B6;"
+                                   FontSize="24"
+                                   TextColor="{StaticResource AppBrown}"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnLesson5Tapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+
+                </VerticalStackLayout>
+            </ScrollView>
+
+        </Grid>
+    </Grid>
+
+</ContentPage>
