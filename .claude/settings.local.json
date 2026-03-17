@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh repo:*)",
+      "Bash(gh auth:*)",
+      "Bash(git clone:*)",
+      "Bash(grep -r \"IChordService\\\\|ICodeService\\\\|interface\" C:UsersOri.BNTVDesktopravidMauiApp8MauiApp8 --include=*.cs)",
+      "Bash(xargs grep:*)",
+      "Bash(wc -l \"C:\\\\Users\\\\Ori.BNTV\\\\Desktop\\\\ravid\\\\MauiApp8\\\\MauiApp8\"*.cs)",
+      "Bash(dotnet build:*)",
+      "Bash(dotnet add:*)",
+      "Bash(tasklist)",
+      "Bash(findstr -i \"MauiApp8\")",
+      "Bash(findstr -i \"maui\\\\|MauiApp\\\\|RD\")",
+      "Bash(\"C:\\\\Users\\\\Ori.BNTV\\\\Desktop\\\\ravid\\\\MauiApp8\\\\MauiApp8\\\\bin\\\\Debug\\\\net9.0-windows10.0.19041.0\\\\win10-x64\\\\MauiApp8.exe\")",
+      "Bash(findstr -i \"maui\\\\|MauiApp\")",
+      "Bash(dotnet workload:*)",
+      "Bash(dotnet MauiApp8.dll)",
+      "Bash(dotnet run:*)",
+      "Bash(dotnet restore:*)",
+      "Bash(start MauiApp8.exe)",
+      "Bash(findstr -i \"MauiApp\")"
+    ]
+  }
+}

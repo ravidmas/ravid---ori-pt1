@@ -1,37 +1,25 @@
-## .NET
+# Build outputs
 bin/
 obj/
+
+# Visual Studio
+.vs/
 *.user
 *.suo
-*.cache
-*.docstates
-.vs/
 *.userprefs
 
-## NuGet
+# NuGet
 packages/
-*.nupkg
 
-## Build results
-[Dd]ebug/
-[Rr]elease/
-x64/
-x86/
-
-## OS files
-.DS_Store
-Thumbs.db
-desktop.ini
-
-## IDE
-.idea/
-*.sln.iml
-
-## MAUI specific
-*.ipa
+# Android build artifacts
 *.apk
 *.aab
 
-## Misc
-maui_crash.txt
-.claude/
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# IDE
+*.idea/
