@@ -41,6 +41,19 @@
             <ScrollView Grid.Row="1">
                 <VerticalStackLayout Spacing="15" Padding="0,10,0,30">
 
+                    <!-- Video Player -->
+                    <Frame x:Name="VideoFrame"
+                           BackgroundColor="Black"
+                           CornerRadius="15"
+                           Padding="0"
+                           HasShadow="True"
+                           IsVisible="False"
+                           IsClippedToBounds="True"
+                           HeightRequest="220">
+                        <WebView x:Name="VideoWebView"
+                                 HeightRequest="220"/>
+                    </Frame>
+
                     <!-- Description Card -->
                     <Frame BackgroundColor="{StaticResource AppCream}"
                            CornerRadius="15"

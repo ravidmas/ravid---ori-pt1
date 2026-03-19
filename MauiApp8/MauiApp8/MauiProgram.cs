@@ -37,6 +37,8 @@ namespace MauiApp8
             builder.Services.AddTransient<PracticeViewModel>();
 
             // Register pages
+            builder.Services.AddTransient<LoginPage>();
+            builder.Services.AddTransient<SignUpPage>();
             builder.Services.AddTransient<LearnChordsPage>();
             builder.Services.AddTransient<PracticePage>();
             builder.Services.AddTransient<LessonsPage>();

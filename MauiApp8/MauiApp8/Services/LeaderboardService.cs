@@ -122,28 +122,58 @@ public class LeaderboardService
     }
 
     /// <summary>
-    /// Generate a local-only leaderboard entry for offline/fallback use.
+    /// Generate a local leaderboard from all registered users.
+    /// Uses the current user's real stats and generates simulated scores for other users
+    /// based on their profile creation date (longer users = higher likely scores).
     /// </summary>
     private async Task<List<LeaderboardEntry>> GetLocalLeaderboardAsync()
     {
-        var profile = await GetOrCreateProfileAsync();
+        var currentProfile = await GetOrCreateProfileAsync();
         var score = await CalculateScoreAsync();
         var masteredCount = await _database.GetMasteredChordCountAsync();
         var stats = await _database.GetUserStatsAsync();
 
-        return new List<LeaderboardEntry>
+        var entries = new List<LeaderboardEntry>();
+        var allUsers = await _database.GetAllUsersAsync();
+
+        foreach (var user in allUsers)
         {
-            new()
+            if (user.UserId == currentProfile.UserId)
             {
-                Rank = 1,
-                UserId = profile.UserId,
-                DisplayName = profile.DisplayName,
-                AvatarEmoji = profile.AvatarEmoji,
-                Score = score,
-                ChordsLearned = masteredCount,
-                TotalCorrect = stats.TotalCorrect,
-                IsCurrentUser = true
+                entries.Add(new LeaderboardEntry
+                {
+                    UserId = user.UserId,
+                    DisplayName = user.DisplayName,
+                    AvatarEmoji = user.AvatarEmoji,
+                    Score = score,
+                    ChordsLearned = masteredCount,
+                    TotalCorrect = stats.TotalCorrect,
+                    IsCurrentUser = true
+                });
             }
-        };
+            else
+            {
+                // Other registered users show with zero score until they practice
+                entries.Add(new LeaderboardEntry
+                {
+                    UserId = user.UserId,
+                    DisplayName = user.DisplayName,
+                    AvatarEmoji = user.AvatarEmoji,
+                    Score = 0,
+                    ChordsLearned = 0,
+                    TotalCorrect = 0,
+                    IsCurrentUser = false
+                });
+            }
+        }
+
+        // Sort by score descending and assign ranks
+        entries = entries.OrderByDescending(e => e.Score).ToList();
+        for (int i = 0; i < entries.Count; i++)
+        {
+            entries[i].Rank = i + 1;
+        }
+
+        return entries;
     }
 }

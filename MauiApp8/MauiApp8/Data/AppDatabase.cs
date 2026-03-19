@@ -215,6 +215,49 @@ public class AppDatabase
             await db.InsertAsync(profile);
     }
 
+    // ── Authentication ──
+
+    public async Task<UserProfile?> GetUserByEmailAsync(string email)
+    {
+        var db = await GetDatabaseAsync();
+        return await db.Table<UserProfile>()
+            .Where(u => u.Email == email)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<bool> RegisterUserAsync(string displayName, string email, string passwordHash)
+    {
+        var existing = await GetUserByEmailAsync(email);
+        if (existing != null) return false; // Email already exists
+
+        var profile = new UserProfile
+        {
+            UserId = Guid.NewGuid().ToString(),
+            DisplayName = displayName,
+            Email = email,
+            PasswordHash = passwordHash,
+            CreatedAt = DateTime.Now
+        };
+
+        var db = await GetDatabaseAsync();
+        await db.InsertAsync(profile);
+        return true;
+    }
+
+    public async Task<UserProfile?> AuthenticateUserAsync(string email, string passwordHash)
+    {
+        var db = await GetDatabaseAsync();
+        return await db.Table<UserProfile>()
+            .Where(u => u.Email == email && u.PasswordHash == passwordHash)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<List<UserProfile>> GetAllUsersAsync()
+    {
+        var db = await GetDatabaseAsync();
+        return await db.Table<UserProfile>().ToListAsync();
+    }
+
     // ── Utility ──
 
     public async Task<int> GetTotalUniqueChordsPracticedAsync()

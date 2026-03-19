@@ -20,7 +20,7 @@ public class GeminiAiService : IAiService
         };
     }
 
-    public bool IsConfigured => !string.IsNullOrEmpty(GetApiKey());
+    public bool IsConfigured => true; // Always configured with built-in key
 
     public async Task<string> SendMessageAsync(string userMessage, string systemContext = "")
     {
@@ -89,18 +89,19 @@ public class GeminiAiService : IAiService
     }
 
     /// <summary>
-    /// Get the API key from secure storage.
+    /// Get the API key. Uses user-configured key if available, otherwise falls back to built-in key.
     /// </summary>
     private string GetApiKey()
     {
         try
         {
-            return Preferences.Get("GeminiApiKey", "");
+            var userKey = Preferences.Get("GeminiApiKey", "");
+            if (!string.IsNullOrEmpty(userKey))
+                return userKey;
         }
-        catch
-        {
-            return "";
-        }
+        catch { }
+
+        return AppConfig.GeminiApiKey;
     }
 
     /// <summary>

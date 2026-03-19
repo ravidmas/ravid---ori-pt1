@@ -109,7 +109,10 @@ namespace MauiApp8.Pages
                 Margin = new Thickness(0, 0, 0, 10)
             };
 
-            var grid = new Grid
+            var outerStack = new VerticalStackLayout { Spacing = 10 };
+
+            // Top row: Name + Difficulty + Play button
+            var topGrid = new Grid
             {
                 ColumnDefinitions =
                 {
@@ -123,7 +126,6 @@ namespace MauiApp8.Pages
                 }
             };
 
-            // Chord Name
             var nameLabel = new Label
             {
                 Text = chord.Name,
@@ -135,7 +137,6 @@ namespace MauiApp8.Pages
             Grid.SetColumn(nameLabel, 0);
             Grid.SetRow(nameLabel, 0);
 
-            // Difficulty Badge
             var difficultyLabel = new Label
             {
                 Text = chord.Difficulty.ToUpper(),
@@ -149,7 +150,6 @@ namespace MauiApp8.Pages
             Grid.SetColumn(difficultyLabel, 0);
             Grid.SetRow(difficultyLabel, 1);
 
-            // Play Button
             var playButton = new Button
             {
                 Text = "\u25B6 Play",
@@ -164,13 +164,145 @@ namespace MauiApp8.Pages
             Grid.SetRow(playButton, 0);
             Grid.SetRowSpan(playButton, 2);
 
-            grid.Children.Add(nameLabel);
-            grid.Children.Add(difficultyLabel);
-            grid.Children.Add(playButton);
+            topGrid.Children.Add(nameLabel);
+            topGrid.Children.Add(difficultyLabel);
+            topGrid.Children.Add(playButton);
 
-            frame.Content = grid;
+            outerStack.Children.Add(topGrid);
 
+            // Chord Diagram
+            if (chord.Frets != null && chord.Frets.Length == 6)
+            {
+                var diagram = CreateChordDiagram(chord);
+                outerStack.Children.Add(diagram);
+            }
+
+            // Description
+            if (!string.IsNullOrEmpty(chord.Description))
+            {
+                outerStack.Children.Add(new Label
+                {
+                    Text = chord.Description,
+                    FontSize = 13,
+                    TextColor = (Color)Application.Current!.Resources["Gray500"],
+                    LineHeight = 1.3
+                });
+            }
+
+            frame.Content = outerStack;
             return frame;
+        }
+
+        /// <summary>
+        /// Creates a text-based chord diagram showing fret positions.
+        /// </summary>
+        private View CreateChordDiagram(Chord chord)
+        {
+            var diagramFrame = new Frame
+            {
+                BackgroundColor = Colors.White,
+                CornerRadius = 10,
+                Padding = new Thickness(15, 10),
+                HasShadow = false
+            };
+
+            var stack = new VerticalStackLayout { Spacing = 2, HorizontalOptions = LayoutOptions.Center };
+
+            string[] stringNames = { "E", "A", "D", "G", "B", "e" };
+
+            // Header: string names
+            var headerGrid = new Grid { ColumnSpacing = 0 };
+            headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(28) });
+            for (int f = 0; f <= 4; f++)
+                headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(32) });
+
+            // Each string row
+            for (int s = 0; s < 6; s++)
+            {
+                var rowGrid = new Grid { ColumnSpacing = 0, HeightRequest = 22 };
+                rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(28) });
+                for (int f = 0; f <= 4; f++)
+                    rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(32) });
+
+                // String name
+                var stringLabel = new Label
+                {
+                    Text = stringNames[s],
+                    FontSize = 13,
+                    FontAttributes = FontAttributes.Bold,
+                    TextColor = (Color)Application.Current!.Resources["AppDarkBrown"],
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    VerticalTextAlignment = TextAlignment.Center
+                };
+                Grid.SetColumn(stringLabel, 0);
+                rowGrid.Children.Add(stringLabel);
+
+                int fretValue = chord.Frets[s];
+                int fingerValue = chord.Fingers != null && chord.Fingers.Length > s ? chord.Fingers[s] : 0;
+
+                // Fret positions (columns 1-5 represent frets 1-5)
+                for (int f = 1; f <= 4; f++)
+                {
+                    string cellText;
+                    Color cellColor;
+
+                    if (fretValue == -1 && f == 1)
+                    {
+                        cellText = "X";
+                        cellColor = (Color)Application.Current!.Resources["ErrorRed"];
+                    }
+                    else if (fretValue == 0 && f == 1)
+                    {
+                        cellText = "O";
+                        cellColor = (Color)Application.Current!.Resources["SuccessGreen"];
+                    }
+                    else if (fretValue == f)
+                    {
+                        cellText = fingerValue > 0 ? fingerValue.ToString() : "\u25CF";
+                        cellColor = (Color)Application.Current!.Resources["AppBrown"];
+                    }
+                    else
+                    {
+                        cellText = "\u2500";
+                        cellColor = Color.FromArgb("#CCCCCC");
+                    }
+
+                    var fretLabel = new Label
+                    {
+                        Text = cellText,
+                        FontSize = fretValue == f ? 15 : 12,
+                        FontAttributes = fretValue == f ? FontAttributes.Bold : FontAttributes.None,
+                        TextColor = cellColor,
+                        HorizontalTextAlignment = TextAlignment.Center,
+                        VerticalTextAlignment = TextAlignment.Center
+                    };
+                    Grid.SetColumn(fretLabel, f);
+                    rowGrid.Children.Add(fretLabel);
+                }
+
+                stack.Children.Add(rowGrid);
+            }
+
+            // Fret numbers footer
+            var footerGrid = new Grid { ColumnSpacing = 0 };
+            footerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(28) });
+            for (int f = 1; f <= 4; f++)
+            {
+                footerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(32) });
+                var fretNum = new Label
+                {
+                    Text = f.ToString(),
+                    FontSize = 11,
+                    TextColor = (Color)Application.Current!.Resources["Gray400"],
+                    HorizontalTextAlignment = TextAlignment.Center
+                };
+                Grid.SetColumn(fretNum, f);
+                footerGrid.Children.Add(fretNum);
+            }
+            stack.Children.Add(footerGrid);
+
+            diagramFrame.Content = stack;
+            return diagramFrame;
         }
 
         private Color GetDifficultyColor(string difficulty)

@@ -61,4 +61,21 @@ public partial class ProfilePage : ContentPage
         if (trophiesPage != null)
             await Navigation.PushAsync(trophiesPage);
     }
+
+    private async void OnLogoutClicked(object sender, EventArgs e)
+    {
+        bool confirm = await DisplayAlert("Sign Out", "Are you sure you want to sign out?", "Yes", "Cancel");
+        if (!confirm) return;
+
+        Preferences.Remove("LoggedInUserId");
+        Preferences.Remove("UserDisplayName");
+        Preferences.Remove("UserEmail");
+
+        if (Application.Current != null)
+        {
+            var loginPage = Handler?.MauiContext?.Services.GetService<MauiApp8.Pages.LoginPage>();
+            if (loginPage != null)
+                Application.Current.Windows[0].Page = new NavigationPage(loginPage);
+        }
+    }
 }

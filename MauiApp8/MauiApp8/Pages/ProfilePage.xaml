@@ -218,6 +218,16 @@
                         </Frame.GestureRecognizers>
                     </Frame>
 
+                    <!-- Logout -->
+                    <Button Text="Sign Out"
+                            BackgroundColor="{StaticResource ErrorRed}"
+                            TextColor="White"
+                            FontSize="16"
+                            CornerRadius="15"
+                            HeightRequest="50"
+                            Margin="0,10,0,0"
+                            Clicked="OnLogoutClicked"/>
+
                 </VerticalStackLayout>
             </ScrollView>
 

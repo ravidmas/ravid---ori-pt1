@@ -2,12 +2,22 @@ namespace MauiApp8.Pages;
 
 public partial class LessonDetailPage : ContentPage
 {
-    public LessonDetailPage(string title, string description, string[] steps)
+    public LessonDetailPage(string title, string description, string[] steps, string videoUrl = "")
     {
         InitializeComponent();
 
         TitleLabel.Text = title;
         DescriptionLabel.Text = description;
+
+        // Load video if URL is provided
+        if (!string.IsNullOrEmpty(videoUrl))
+        {
+            VideoFrame.IsVisible = true;
+            var html = $@"<html><head><meta name='viewport' content='width=device-width, initial-scale=1'>
+                <style>body{{margin:0;padding:0;background:#000;}}iframe{{width:100%;height:100%;border:none;}}</style></head>
+                <body><iframe src='{videoUrl}?rel=0&modestbranding=1' allowfullscreen></iframe></body></html>";
+            VideoWebView.Source = new HtmlWebViewSource { Html = html };
+        }
 
         for (int i = 0; i < steps.Length; i++)
         {

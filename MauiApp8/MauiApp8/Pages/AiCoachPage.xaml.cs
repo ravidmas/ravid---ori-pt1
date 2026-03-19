@@ -19,7 +19,8 @@ public partial class AiCoachPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        ApiKeyBanner.IsVisible = !_aiService.IsConfigured;
+        // API key is built-in, banner hidden by default
+        ApiKeyBanner.IsVisible = false;
     }
 
     private async void OnSendButtonClicked(object sender, EventArgs e)

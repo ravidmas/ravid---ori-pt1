@@ -2,7 +2,7 @@ namespace MauiApp8.Pages;
 
 public partial class LessonsPage : ContentPage
 {
-    // Curated lesson content - can be replaced with API content later
+    // Curated lesson content with YouTube video links
     private static readonly Dictionary<int, LessonInfo> _lessons = new()
     {
         [1] = new("How to Hold a Guitar",
@@ -14,7 +14,8 @@ public partial class LessonsPage : ContentPage
                 "Curve your fingers so you press strings with your fingertips.",
                 "Keep your wrist relaxed - tension is the enemy of good guitar playing!",
                 "The neck should be slightly angled upward, not parallel to the floor."
-            }),
+            },
+            "https://www.youtube.com/embed/0LNsmKGclPc"),
         [2] = new("Your First Chord: Em",
             "The E minor chord is the easiest chord to learn on guitar.",
             new[]
@@ -24,7 +25,8 @@ public partial class LessonsPage : ContentPage
                 "Strum all 6 strings from top to bottom.",
                 "Make sure each string rings clearly - adjust your finger pressure if needed.",
                 "Practice pressing down and releasing the chord shape repeatedly."
-            }),
+            },
+            "https://www.youtube.com/embed/6hIubHK3rLg"),
         [3] = new("Basic Strumming Patterns",
             "Master the fundamental down-up strumming pattern.",
             new[]
@@ -34,7 +36,8 @@ public partial class LessonsPage : ContentPage
                 "Keep your wrist loose and relaxed while strumming.",
                 "Use a metronome or tap your foot to keep time.",
                 "Try this pattern: Down-Down-Up-Up-Down-Up."
-            }),
+            },
+            "https://www.youtube.com/embed/Hm1JFjHMOCA"),
         [4] = new("Smooth Chord Transitions",
             "Learn techniques to switch between chords quickly and smoothly.",
             new[]
@@ -44,7 +47,8 @@ public partial class LessonsPage : ContentPage
                 "Look for 'anchor fingers' - fingers that stay in the same position between chords.",
                 "Start slow and gradually increase speed.",
                 "Practice the 'one-minute change' drill: count how many clean switches you can make in 60 seconds."
-            }),
+            },
+            "https://www.youtube.com/embed/9_1bMySFT8w"),
         [5] = new("Introduction to Barre Chords",
             "Take your playing to the next level with barre chords.",
             new[]
@@ -54,7 +58,8 @@ public partial class LessonsPage : ContentPage
                 "Place your other fingers in the E major shape, shifted up one fret.",
                 "Use the side of your index finger for the barre, not the flat pad.",
                 "Build strength gradually - barre chords take weeks of practice to master!"
-            })
+            },
+            "https://www.youtube.com/embed/QEJnKFsYSMk")
     };
 
     public LessonsPage()
@@ -78,9 +83,9 @@ public partial class LessonsPage : ContentPage
         if (!_lessons.TryGetValue(lessonNumber, out var lesson))
             return;
 
-        var lessonPage = new LessonDetailPage(lesson.Title, lesson.Description, lesson.Steps);
+        var lessonPage = new LessonDetailPage(lesson.Title, lesson.Description, lesson.Steps, lesson.VideoUrl);
         await Navigation.PushAsync(lessonPage);
     }
 
-    public record LessonInfo(string Title, string Description, string[] Steps);
+    public record LessonInfo(string Title, string Description, string[] Steps, string VideoUrl = "");
 }

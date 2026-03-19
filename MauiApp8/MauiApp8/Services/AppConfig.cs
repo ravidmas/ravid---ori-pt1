@@ -19,4 +19,10 @@ public static class AppConfig
     /// HTTP request timeout in seconds
     /// </summary>
     public static int HttpTimeoutSeconds => 10;
+
+    /// <summary>
+    /// Built-in Gemini API key for AI Coach functionality.
+    /// Free tier: 15 requests/minute, 1M tokens/day.
+    /// </summary>
+    public static string GeminiApiKey => "AIzaSyBpMKq-0jAecYmfM_MG-yam1rFPmNHvaIQ";
 }
