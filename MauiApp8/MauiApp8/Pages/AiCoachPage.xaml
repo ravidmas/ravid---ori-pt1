@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiApp8.Pages.AiCoachPage"
+             BackgroundColor="Transparent">
+
+    <Grid>
+        <Image Source="guitar_background.jpg" Aspect="AspectFill" Opacity="1"/>
+        <BoxView Color="{StaticResource AppOrange}" Opacity="0.7"/>
+
+        <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="20">
+
+            <!-- Header -->
+            <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="0,50,0,10">
+                <Button Grid.Column="0" Text="&#x2190; Back" TextColor="White" FontSize="18"
+                        BackgroundColor="Transparent" Clicked="OnBackClicked"/>
+                <Label Grid.Column="1" Text="&#x1F916; AI Coach" FontSize="28" FontAttributes="Bold"
+                       TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Grid>
+
+            <!-- API Key Banner (shown when not configured) -->
+            <Frame x:Name="ApiKeyBanner" Grid.Row="1" BackgroundColor="{StaticResource DifficultyMedium}"
+                   CornerRadius="12" Padding="15" HasShadow="True" IsVisible="False" Margin="0,0,0,10">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Setup Required" FontSize="16" FontAttributes="Bold" TextColor="White"/>
+                    <Label Text="Enter your free Google Gemini API key to enable AI coaching."
+                           FontSize="13" TextColor="White"/>
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                        <Entry x:Name="ApiKeyEntry" Placeholder="Paste API key here..."
+                               BackgroundColor="White" TextColor="Black" FontSize="13"/>
+                        <Button Grid.Column="1" Text="Save" BackgroundColor="{StaticResource AppDarkBrown}"
+                                TextColor="White" CornerRadius="8" FontSize="14" Clicked="OnSaveApiKey"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Quick Actions -->
+            <ScrollView Grid.Row="1" Orientation="Horizontal" HorizontalScrollBarVisibility="Never"
+                        x:Name="QuickActionsScroll">
+                <HorizontalStackLayout Spacing="8" Padding="0,0,0,10">
+                    <Button Text="What should I practice?" BackgroundColor="{StaticResource AppCream}"
+                            TextColor="{StaticResource AppDarkBrown}" CornerRadius="20" FontSize="12"
+                            Padding="12,6" Clicked="OnQuickAsk1"/>
+                    <Button Text="Tips for beginners" BackgroundColor="{StaticResource AppCream}"
+                            TextColor="{StaticResource AppDarkBrown}" CornerRadius="20" FontSize="12"
+                            Padding="12,6" Clicked="OnQuickAsk2"/>
+                    <Button Text="How to switch chords?" BackgroundColor="{StaticResource AppCream}"
+                            TextColor="{StaticResource AppDarkBrown}" CornerRadius="20" FontSize="12"
+                            Padding="12,6" Clicked="OnQuickAsk3"/>
+                    <Button Text="&#x2699; API Key" BackgroundColor="{StaticResource AppBrown}"
+                            TextColor="White" CornerRadius="20" FontSize="12"
+                            Padding="12,6" Clicked="OnToggleApiKey"/>
+                </HorizontalStackLayout>
+            </ScrollView>
+
+            <!-- Chat Messages -->
+            <ScrollView Grid.Row="2" x:Name="ChatScrollView">
+                <VerticalStackLayout x:Name="ChatContainer" Spacing="10" Padding="0,10,0,10">
+                    <!-- Welcome message -->
+                    <Frame BackgroundColor="{StaticResource AppCream}" CornerRadius="15"
+                           Padding="15" HasShadow="False" HorizontalOptions="Start"
+                           MaximumWidthRequest="300">
+                        <Label Text="Hey there! I'm your AI guitar coach. Ask me anything about guitar playing, chords, or practice tips!"
+                               FontSize="14" TextColor="{StaticResource AppDarkBrown}" LineHeight="1.3"/>
+                    </Frame>
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <!-- Input Area -->
+            <Grid Grid.Row="3" ColumnDefinitions="*,Auto" ColumnSpacing="10" Margin="0,10,0,20">
+                <Frame BackgroundColor="{StaticResource AppCream}" CornerRadius="25" Padding="5,0" HasShadow="True">
+                    <Entry x:Name="MessageEntry" Placeholder="Ask your guitar question..."
+                           TextColor="{StaticResource AppDarkBrown}" FontSize="15"
+                           ReturnType="Send" Completed="OnSendMessage"/>
+                </Frame>
+                <Button Grid.Column="1" Text="&#x27A4;" FontSize="24"
+                        BackgroundColor="{StaticResource AppBrown}" TextColor="White"
+                        CornerRadius="25" WidthRequest="50" HeightRequest="50"
+                        Clicked="OnSendButtonClicked"/>
+            </Grid>
+
+        </Grid>
+    </Grid>
+
+</ContentPage>

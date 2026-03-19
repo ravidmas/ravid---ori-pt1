@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiApp8.Pages.PracticePage"
+             BackgroundColor="Transparent">
+
+    <Grid>
+        <!-- Background Image -->
+        <Image Source="guitar_background.jpg"
+               Aspect="AspectFill"
+               Opacity="1"/>
+
+        <!-- Dark Overlay for better readability -->
+        <BoxView Color="{StaticResource AppOrange}"
+                 Opacity="0.7"/>
+
+        <!-- Main Content -->
+        <Grid RowDefinitions="Auto,Auto,*,Auto"
+              Padding="20">
+
+            <!-- Back Button + Title Row -->
+            <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="0,50,0,10">
+                <Button Grid.Column="0"
+                        Text="&#x2190; Back"
+                        TextColor="White"
+                        FontSize="18"
+                        BackgroundColor="Transparent"
+                        AutomationId="BackButton"
+                        SemanticProperties.Description="Go back to home screen"
+                        Clicked="OnBackClicked"/>
+                <Label Grid.Column="1"
+                       Text="Practice Mode"
+                       FontSize="32"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+            </Grid>
+
+            <!-- Target Chord Display -->
+            <Frame Grid.Row="1"
+                   BackgroundColor="{StaticResource AppCream}"
+                   CornerRadius="20"
+                   Padding="20"
+                   HasShadow="True"
+                   Margin="10,10">
+                <VerticalStackLayout Spacing="10"
+                                   HorizontalOptions="Center">
+                    <Label Text="Play this chord:"
+                           FontSize="16"
+                           TextColor="{StaticResource AppDarkBrown}"
+                           HorizontalOptions="Center"/>
+                    <Label x:Name="TargetChordLabel"
+                           Text="Loading..."
+                           FontSize="48"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource AppBrown}"
+                           HorizontalOptions="Center"/>
+                    <Frame x:Name="DifficultyBadge"
+                           BackgroundColor="{StaticResource DifficultyEasy}"
+                           CornerRadius="12"
+                           Padding="12,4"
+                           HasShadow="False"
+                           HorizontalOptions="Center">
+                        <Label x:Name="DifficultyLabel"
+                               Text="Easy"
+                               FontSize="14"
+                               TextColor="White"
+                               FontAttributes="Bold"/>
+                    </Frame>
+                    <Button x:Name="PlayReferenceButton"
+                            Text="&#x25B6; Play Reference Sound"
+                            BackgroundColor="{StaticResource AppBrown}"
+                            TextColor="White"
+                            FontSize="16"
+                            CornerRadius="12"
+                            Padding="20,10"
+                            AutomationId="PlayReferenceButton"
+                            SemanticProperties.Description="Play the reference sound for this chord"
+                            Clicked="OnPlayReferenceClicked"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Recording Area -->
+            <VerticalStackLayout Grid.Row="2"
+                               VerticalOptions="Center"
+                               Spacing="20"
+                               Padding="20">
+
+                <!-- Status Label -->
+                <Label x:Name="StatusLabel"
+                       Text="Tap the button below and play the chord"
+                       FontSize="18"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center"/>
+
+                <!-- Record Button (large circular) -->
+                <Frame x:Name="RecordButtonFrame"
+                       BackgroundColor="{StaticResource ErrorRed}"
+                       CornerRadius="60"
+                       WidthRequest="120"
+                       HeightRequest="120"
+                       Padding="0"
+                       HasShadow="True"
+                       HorizontalOptions="Center"
+                       AutomationId="RecordButton"
+                       SemanticProperties.Description="Record audio - tap to start or stop recording">
+                    <Label x:Name="RecordButtonIcon"
+                           Text="&#x1F3A4;"
+                           FontSize="48"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnRecordTapped"/>
+                    </Frame.GestureRecognizers>
+                </Frame>
+
+                <Label x:Name="RecordTimerLabel"
+                       Text=""
+                       FontSize="16"
+                       TextColor="White"
+                       HorizontalOptions="Center"/>
+
+                <!-- Result Panel (hidden by default) -->
+                <Frame x:Name="ResultPanel"
+                       BackgroundColor="{StaticResource AppCream}"
+                       CornerRadius="20"
+                       Padding="20"
+                       HasShadow="True"
+                       IsVisible="False">
+                    <VerticalStackLayout Spacing="10"
+                                       HorizontalOptions="Center">
+                        <Label x:Name="ResultTitleLabel"
+                               Text=""
+                               FontSize="24"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"/>
+                        <Label x:Name="DetectedChordLabel"
+                               Text=""
+                               FontSize="20"
+                               TextColor="{StaticResource AppDarkBrown}"
+                               HorizontalOptions="Center"/>
+                        <Label x:Name="FrequencyLabel"
+                               Text=""
+                               FontSize="14"
+                               TextColor="{StaticResource Gray400}"
+                               HorizontalOptions="Center"/>
+                        <Label x:Name="ConfidenceLabel"
+                               Text=""
+                               FontSize="16"
+                               TextColor="{StaticResource AppDarkBrown}"
+                               HorizontalOptions="Center"/>
+
+                        <!-- AI Feedback -->
+                        <Label x:Name="AiFeedbackLabel"
+                               Text=""
+                               FontSize="13"
+                               TextColor="{StaticResource AppBrown}"
+                               HorizontalTextAlignment="Center"
+                               IsVisible="False"
+                               FontAttributes="Italic"
+                               Margin="0,5,0,0"
+                               LineHeight="1.3"/>
+
+                        <!-- Action Buttons -->
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,10,0,0">
+                            <Button Grid.Column="0"
+                                    Text="Try Again"
+                                    BackgroundColor="{StaticResource AppBrown}"
+                                    TextColor="White"
+                                    CornerRadius="12"
+                                    AutomationId="TryAgainButton"
+                                    Clicked="OnTryAgainClicked"/>
+                            <Button Grid.Column="1"
+                                    Text="Next Chord"
+                                    BackgroundColor="{StaticResource AppDarkBrown}"
+                                    TextColor="White"
+                                    CornerRadius="12"
+                                    AutomationId="NextChordButton"
+                                    Clicked="OnNextChordClicked"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Loading Indicator -->
+                <ActivityIndicator x:Name="LoadingIndicator"
+                                 IsRunning="False"
+                                 IsVisible="False"
+                                 Color="White"
+                                 HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+
+            <!-- Bottom Info -->
+            <Label Grid.Row="3"
+                   Text="Record for 3 seconds while playing the chord"
+                   FontSize="12"
+                   TextColor="White"
+                   Opacity="0.7"
+                   HorizontalOptions="Center"
+                   Margin="0,0,0,30"/>
+        </Grid>
+    </Grid>
+
+</ContentPage>

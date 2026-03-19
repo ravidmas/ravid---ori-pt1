@@ -1,0 +1,25 @@
+# Build outputs
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userprefs
+
+# NuGet
+packages/
+
+# Android build artifacts
+*.apk
+*.aab
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# IDE
+*.idea/

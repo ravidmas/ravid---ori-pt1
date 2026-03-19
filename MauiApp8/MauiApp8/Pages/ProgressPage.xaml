@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiApp8.Pages.ProgressPage"
+             BackgroundColor="Transparent">
+
+    <Grid>
+        <!-- Background Image -->
+        <Image Source="guitar_background.jpg"
+               Aspect="AspectFill"
+               Opacity="1"/>
+
+        <!-- Orange Overlay -->
+        <BoxView Color="{StaticResource AppOrange}"
+                 Opacity="0.7"/>
+
+        <!-- Main Content -->
+        <Grid RowDefinitions="Auto,*"
+              Padding="20">
+
+            <!-- Header -->
+            <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="0,50,0,10">
+                <Button Grid.Column="0"
+                        Text="&#x2190; Back"
+                        TextColor="White"
+                        FontSize="18"
+                        BackgroundColor="Transparent"
+                        AutomationId="BackButton"
+                        Clicked="OnBackClicked"/>
+                <Label Grid.Column="1"
+                       Text="My Progress"
+                       FontSize="32"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+            </Grid>
+
+            <!-- Progress Content -->
+            <ScrollView Grid.Row="1">
+                <VerticalStackLayout Spacing="15" Padding="0,10,0,30">
+
+                    <!-- Overall Stats Card -->
+                    <Frame BackgroundColor="{StaticResource AppCream}"
+                           CornerRadius="20"
+                           Padding="20"
+                           HasShadow="True">
+                        <VerticalStackLayout Spacing="10">
+                            <Label Text="Overall Performance"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource AppDarkBrown}"/>
+
+                            <!-- Accuracy Bar -->
+                            <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" RowSpacing="5">
+                                <Label Grid.Row="0" Grid.Column="0"
+                                       Text="Accuracy"
+                                       FontSize="14"
+                                       TextColor="{StaticResource Gray500}"/>
+                                <Label Grid.Row="0" Grid.Column="1"
+                                       x:Name="AccuracyPercentLabel"
+                                       Text="0%"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource AppBrown}"/>
+                                <Frame Grid.Row="1" Grid.ColumnSpan="2"
+                                       BackgroundColor="{StaticResource Gray200}"
+                                       CornerRadius="5"
+                                       HeightRequest="10"
+                                       Padding="0"
+                                       HasShadow="False">
+                                    <Frame x:Name="AccuracyBar"
+                                           BackgroundColor="{StaticResource SuccessGreen}"
+                                           CornerRadius="5"
+                                           HeightRequest="10"
+                                           Padding="0"
+                                           HasShadow="False"
+                                           HorizontalOptions="Start"
+                                           WidthRequest="0"/>
+                                </Frame>
+                            </Grid>
+
+                            <!-- Stats Row -->
+                            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="5" Margin="0,5,0,0">
+                                <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center">
+                                    <Label x:Name="TotalSessionsLabel" Text="0" FontSize="24"
+                                           FontAttributes="Bold" TextColor="{StaticResource AppBrown}"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="Sessions" FontSize="11"
+                                           TextColor="{StaticResource Gray500}" HorizontalOptions="Center"/>
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center">
+                                    <Label x:Name="ChordsLearnedLabel" Text="0" FontSize="24"
+                                           FontAttributes="Bold" TextColor="{StaticResource AppBrown}"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="Mastered" FontSize="11"
+                                           TextColor="{StaticResource Gray500}" HorizontalOptions="Center"/>
+                                </VerticalStackLayout>
+                                <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center">
+                                    <Label x:Name="StreakLabel" Text="0" FontSize="24"
+                                           FontAttributes="Bold" TextColor="{StaticResource AppOrange}"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="Day Streak" FontSize="11"
+                                           TextColor="{StaticResource Gray500}" HorizontalOptions="Center"/>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- Chord Mastery Section -->
+                    <Label Text="Chord Mastery"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           Margin="0,5,0,0"/>
+
+                    <VerticalStackLayout x:Name="MasteryContainer"
+                                       Spacing="8"/>
+
+                    <Label x:Name="NoMasteryLabel"
+                           Text="No practice data yet. Start practicing to see your progress!"
+                           TextColor="White"
+                           FontSize="14"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           Margin="0,10,0,0"
+                           IsVisible="True"/>
+
+                    <!-- Weak Chords Section -->
+                    <Label x:Name="WeakChordsHeader"
+                           Text="&#x1F4AA; Needs Practice"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           Margin="0,10,0,0"
+                           IsVisible="False"/>
+
+                    <VerticalStackLayout x:Name="WeakChordsContainer"
+                                       Spacing="8"/>
+
+                    <!-- Recent History -->
+                    <Label x:Name="HistoryHeader"
+                           Text="Recent Activity"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           Margin="0,10,0,0"
+                           IsVisible="False"/>
+
+                    <VerticalStackLayout x:Name="HistoryContainer"
+                                       Spacing="8"/>
+
+                </VerticalStackLayout>
+            </ScrollView>
+
+        </Grid>
+    </Grid>
+
+</ContentPage>

@@ -1,0 +1,277 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiApp8.MainPage"
+             BackgroundColor="Transparent">
+
+    <!-- Background Image with Overlay -->
+    <Grid>
+        <!-- Background Image -->
+        <Image Source="guitar_background.jpg"
+               Aspect="AspectFill"
+               Opacity="1"/>
+        
+        <!-- Orange Overlay -->
+        <BoxView Color="{StaticResource AppOrange}"
+                 Opacity="0.3"/>
+
+        <!-- Main Content -->
+        <Grid RowDefinitions="Auto,*,Auto"
+              Padding="0">
+            
+            <!-- Title -->
+            <Label Grid.Row="0"
+                   Text="RD Strings"
+                   FontSize="48"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   HorizontalOptions="Center"
+                   Margin="0,80,0,0"/>
+
+            <!-- Menu Buttons -->
+            <ScrollView Grid.Row="1">
+                <VerticalStackLayout VerticalOptions="Center"
+                                   Spacing="20"
+                                   Padding="40,0">
+
+                    <!-- Learn Chords Button -->
+                    <Frame BackgroundColor="{StaticResource AppCream}"
+                           CornerRadius="20"
+                           Padding="0"
+                           HasShadow="True"
+                           HeightRequest="70">
+                        <Grid Padding="20,0"
+                              ColumnDefinitions="Auto,*"
+                              ColumnSpacing="15">
+                            <Label Grid.Column="0"
+                                   Text="🎵"
+                                   FontSize="32"
+                                   VerticalOptions="Center"/>
+                            <Label Grid.Column="1"
+                                   Text="Learn Chords"
+                                   FontSize="24"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource AppDarkBrown}"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnLearnChordsTapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+
+                    <!-- Practice Button -->
+                    <Frame BackgroundColor="{StaticResource AppCream}"
+                           CornerRadius="20"
+                           Padding="0"
+                           HasShadow="True"
+                           HeightRequest="70">
+                        <Grid Padding="20,0"
+                              ColumnDefinitions="Auto,*"
+                              ColumnSpacing="15">
+                            <Label Grid.Column="0"
+                                   Text="🎸"
+                                   FontSize="32"
+                                   VerticalOptions="Center"/>
+                            <Label Grid.Column="1"
+                                   Text="Practice"
+                                   FontSize="24"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource AppDarkBrown}"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnPracticeTapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+
+                    <!-- Lessons Button -->
+                    <Frame BackgroundColor="{StaticResource AppCream}"
+                           CornerRadius="20"
+                           Padding="0"
+                           HasShadow="True"
+                           HeightRequest="70">
+                        <Grid Padding="20,0"
+                              ColumnDefinitions="Auto,*"
+                              ColumnSpacing="15">
+                            <Label Grid.Column="0"
+                                   Text="🎥"
+                                   FontSize="32"
+                                   VerticalOptions="Center"/>
+                            <Label Grid.Column="1"
+                                   Text="Lessons"
+                                   FontSize="24"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource AppDarkBrown}"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnLessonsTapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+
+                    <!-- My Progress Button -->
+                    <Frame BackgroundColor="{StaticResource AppCream}"
+                           CornerRadius="20"
+                           Padding="0"
+                           HasShadow="True"
+                           HeightRequest="70">
+                        <Grid Padding="20,0"
+                              ColumnDefinitions="Auto,*"
+                              ColumnSpacing="15">
+                            <Label Grid.Column="0"
+                                   Text="📈"
+                                   FontSize="32"
+                                   VerticalOptions="Center"/>
+                            <Label Grid.Column="1"
+                                   Text="My Progress"
+                                   FontSize="24"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource AppDarkBrown}"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnProgressTapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+
+                    <!-- Leaderboard Button -->
+                    <Frame BackgroundColor="{StaticResource AppCream}"
+                           CornerRadius="20"
+                           Padding="0"
+                           HasShadow="True"
+                           HeightRequest="70">
+                        <Grid Padding="20,0"
+                              ColumnDefinitions="Auto,*"
+                              ColumnSpacing="15">
+                            <Label Grid.Column="0"
+                                   Text="&#x1F3C6;"
+                                   FontSize="32"
+                                   VerticalOptions="Center"/>
+                            <Label Grid.Column="1"
+                                   Text="Leaderboard"
+                                   FontSize="24"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource AppDarkBrown}"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnLeaderboardTapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+
+                    <!-- AI Coach Button -->
+                    <Frame BackgroundColor="{StaticResource AppCream}"
+                           CornerRadius="20"
+                           Padding="0"
+                           HasShadow="True"
+                           HeightRequest="70">
+                        <Grid Padding="20,0"
+                              ColumnDefinitions="Auto,*"
+                              ColumnSpacing="15">
+                            <Label Grid.Column="0"
+                                   Text="&#x1F916;"
+                                   FontSize="32"
+                                   VerticalOptions="Center"/>
+                            <Label Grid.Column="1"
+                                   Text="AI Coach"
+                                   FontSize="24"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource AppDarkBrown}"
+                                   VerticalOptions="Center"/>
+                        </Grid>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnAiCoachTapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <!-- Bottom Navigation Bar -->
+            <Grid Grid.Row="2"
+                  BackgroundColor="{StaticResource AppBrown}"
+                  Padding="0,10,0,30"
+                  ColumnDefinitions="*,*,*,*">
+
+                <!-- Home (Active) -->
+                <VerticalStackLayout Grid.Column="0"
+                                   Spacing="3"
+                                   HorizontalOptions="Center"
+                                   AutomationId="NavHome">
+                    <Label Text="&#x1F3E0;"
+                           FontSize="28"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Home"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           HorizontalOptions="Center"/>
+                    <BoxView Color="{StaticResource AppCream}"
+                             HeightRequest="3"
+                             WidthRequest="40"
+                             CornerRadius="2"
+                             HorizontalOptions="Center"/>
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnHomeTapped"/>
+                    </VerticalStackLayout.GestureRecognizers>
+                </VerticalStackLayout>
+
+                <!-- Learn -->
+                <VerticalStackLayout Grid.Column="1"
+                                   Spacing="3"
+                                   HorizontalOptions="Center"
+                                   AutomationId="NavLearn">
+                    <Label Text="&#x1F4D6;"
+                           FontSize="28"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Learn"
+                           FontSize="12"
+                           TextColor="White"
+                           Opacity="0.7"
+                           HorizontalOptions="Center"/>
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnLearnTapped"/>
+                    </VerticalStackLayout.GestureRecognizers>
+                </VerticalStackLayout>
+
+                <!-- Practice -->
+                <VerticalStackLayout Grid.Column="2"
+                                   Spacing="3"
+                                   HorizontalOptions="Center"
+                                   AutomationId="NavPractice">
+                    <Label Text="&#x1F3B8;"
+                           FontSize="28"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Practice"
+                           FontSize="12"
+                           TextColor="White"
+                           Opacity="0.7"
+                           HorizontalOptions="Center"/>
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnPracticeNavTapped"/>
+                    </VerticalStackLayout.GestureRecognizers>
+                </VerticalStackLayout>
+
+                <!-- Profile -->
+                <VerticalStackLayout Grid.Column="3"
+                                   Spacing="3"
+                                   HorizontalOptions="Center"
+                                   AutomationId="NavProfile">
+                    <Label Text="&#x1F464;"
+                           FontSize="28"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Profile"
+                           FontSize="12"
+                           TextColor="White"
+                           Opacity="0.7"
+                           HorizontalOptions="Center"/>
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnProfileTapped"/>
+                    </VerticalStackLayout.GestureRecognizers>
+                </VerticalStackLayout>
+
+            </Grid>
+
+        </Grid>
+    </Grid>
+
+</ContentPage>
