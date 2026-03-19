@@ -24,5 +24,5 @@ public static class AppConfig
     /// Built-in Gemini API key for AI Coach functionality.
     /// Free tier: 15 requests/minute, 1M tokens/day.
     /// </summary>
-    public static string GeminiApiKey => "AIzaSyBpMKq-0jAecYmfM_MG-yam1rFPmNHvaIQ";
+    public static string GeminiApiKey => "AIzaSyA9nyQKApzh-xjnaI8ikCEi49Urnmg9p_o";
 }
