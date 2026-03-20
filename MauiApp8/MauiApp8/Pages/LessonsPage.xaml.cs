@@ -15,7 +15,7 @@ public partial class LessonsPage : ContentPage
                 "Keep your wrist relaxed - tension is the enemy of good guitar playing!",
                 "The neck should be slightly angled upward, not parallel to the floor."
             },
-            "https://www.youtube.com/embed/0LNsmKGclPc"),
+            "https://www.youtube.com/embed/4IdqXf9D0iE"),
         [2] = new("Your First Chord: Em",
             "The E minor chord is the easiest chord to learn on guitar.",
             new[]
@@ -26,7 +26,7 @@ public partial class LessonsPage : ContentPage
                 "Make sure each string rings clearly - adjust your finger pressure if needed.",
                 "Practice pressing down and releasing the chord shape repeatedly."
             },
-            "https://www.youtube.com/embed/6hIubHK3rLg"),
+            "https://www.youtube.com/embed/6Jxz9F3CYuo"),
         [3] = new("Basic Strumming Patterns",
             "Master the fundamental down-up strumming pattern.",
             new[]
@@ -37,7 +37,7 @@ public partial class LessonsPage : ContentPage
                 "Use a metronome or tap your foot to keep time.",
                 "Try this pattern: Down-Down-Up-Up-Down-Up."
             },
-            "https://www.youtube.com/embed/Hm1JFjHMOCA"),
+            "https://www.youtube.com/embed/4bPp3-p0H2k"),
         [4] = new("Smooth Chord Transitions",
             "Learn techniques to switch between chords quickly and smoothly.",
             new[]
@@ -48,7 +48,7 @@ public partial class LessonsPage : ContentPage
                 "Start slow and gradually increase speed.",
                 "Practice the 'one-minute change' drill: count how many clean switches you can make in 60 seconds."
             },
-            "https://www.youtube.com/embed/9_1bMySFT8w"),
+            "https://www.youtube.com/embed/7VzPzBsm4sU"),
         [5] = new("Introduction to Barre Chords",
             "Take your playing to the next level with barre chords.",
             new[]
@@ -59,7 +59,7 @@ public partial class LessonsPage : ContentPage
                 "Use the side of your index finger for the barre, not the flat pad.",
                 "Build strength gradually - barre chords take weeks of practice to master!"
             },
-            "https://www.youtube.com/embed/QEJnKFsYSMk")
+            "https://www.youtube.com/embed/4ee3TE6fQ0E")
     };
 
     public LessonsPage()

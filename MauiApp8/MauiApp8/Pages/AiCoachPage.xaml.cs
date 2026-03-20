@@ -19,8 +19,6 @@ public partial class AiCoachPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        // API key is built-in, banner hidden by default
-        ApiKeyBanner.IsVisible = false;
     }
 
     private async void OnSendButtonClicked(object sender, EventArgs e)
@@ -186,21 +184,6 @@ Give concise, encouraging, practical guitar advice. Keep responses under 150 wor
         await SendToAi("How can I switch between chords faster and more smoothly? Give me practical exercises.");
     }
 
-    private void OnToggleApiKey(object sender, EventArgs e)
-    {
-        ApiKeyBanner.IsVisible = !ApiKeyBanner.IsVisible;
-    }
-
-    private void OnSaveApiKey(object sender, EventArgs e)
-    {
-        var key = ApiKeyEntry.Text?.Trim();
-        if (!string.IsNullOrEmpty(key))
-        {
-            GeminiAiService.SetApiKey(key);
-            ApiKeyBanner.IsVisible = false;
-            AddAiBubble("API key saved! I'm ready to help you learn guitar. Ask me anything!");
-        }
-    }
 
     private async void OnBackClicked(object sender, EventArgs e)
     {

@@ -220,9 +220,9 @@ public class AppDatabase
     public async Task<UserProfile?> GetUserByEmailAsync(string email)
     {
         var db = await GetDatabaseAsync();
-        return await db.Table<UserProfile>()
-            .Where(u => u.Email == email)
-            .FirstOrDefaultAsync();
+        var emailLower = email.ToLowerInvariant();
+        var allUsers = await db.Table<UserProfile>().ToListAsync();
+        return allUsers.FirstOrDefault(u => u.Email.ToLowerInvariant() == emailLower);
     }
 
     public async Task<bool> RegisterUserAsync(string displayName, string email, string passwordHash)
@@ -234,7 +234,7 @@ public class AppDatabase
         {
             UserId = Guid.NewGuid().ToString(),
             DisplayName = displayName,
-            Email = email,
+            Email = email.ToLowerInvariant(),
             PasswordHash = passwordHash,
             CreatedAt = DateTime.Now
         };
@@ -247,9 +247,10 @@ public class AppDatabase
     public async Task<UserProfile?> AuthenticateUserAsync(string email, string passwordHash)
     {
         var db = await GetDatabaseAsync();
-        return await db.Table<UserProfile>()
-            .Where(u => u.Email == email && u.PasswordHash == passwordHash)
-            .FirstOrDefaultAsync();
+        var emailLower = email.ToLowerInvariant();
+        var allUsers = await db.Table<UserProfile>().ToListAsync();
+        return allUsers.FirstOrDefault(u =>
+            u.Email.ToLowerInvariant() == emailLower && u.PasswordHash == passwordHash);
     }
 
     public async Task<List<UserProfile>> GetAllUsersAsync()

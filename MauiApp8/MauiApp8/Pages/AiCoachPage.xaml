@@ -18,22 +18,6 @@
                        TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"/>
             </Grid>
 
-            <!-- API Key Banner (shown when not configured) -->
-            <Frame x:Name="ApiKeyBanner" Grid.Row="1" BackgroundColor="{StaticResource DifficultyMedium}"
-                   CornerRadius="12" Padding="15" HasShadow="True" IsVisible="False" Margin="0,0,0,10">
-                <VerticalStackLayout Spacing="8">
-                    <Label Text="Setup Required" FontSize="16" FontAttributes="Bold" TextColor="White"/>
-                    <Label Text="Enter your free Google Gemini API key to enable AI coaching."
-                           FontSize="13" TextColor="White"/>
-                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                        <Entry x:Name="ApiKeyEntry" Placeholder="Paste API key here..."
-                               BackgroundColor="White" TextColor="Black" FontSize="13"/>
-                        <Button Grid.Column="1" Text="Save" BackgroundColor="{StaticResource AppDarkBrown}"
-                                TextColor="White" CornerRadius="8" FontSize="14" Clicked="OnSaveApiKey"/>
-                    </Grid>
-                </VerticalStackLayout>
-            </Frame>
-
             <!-- Quick Actions -->
             <ScrollView Grid.Row="1" Orientation="Horizontal" HorizontalScrollBarVisibility="Never"
                         x:Name="QuickActionsScroll">
@@ -47,9 +31,6 @@
                     <Button Text="How to switch chords?" BackgroundColor="{StaticResource AppCream}"
                             TextColor="{StaticResource AppDarkBrown}" CornerRadius="20" FontSize="12"
                             Padding="12,6" Clicked="OnQuickAsk3"/>
-                    <Button Text="&#x2699; API Key" BackgroundColor="{StaticResource AppBrown}"
-                            TextColor="White" CornerRadius="20" FontSize="12"
-                            Padding="12,6" Clicked="OnToggleApiKey"/>
                 </HorizontalStackLayout>
             </ScrollView>
 

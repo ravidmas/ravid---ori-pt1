@@ -5,12 +5,21 @@ namespace MauiApp8.Services;
 
 /// <summary>
 /// Google Gemini API integration for AI guitar coaching.
+/// Uses built-in API key — no user configuration needed.
 /// Free tier: 15 requests/minute, 1M tokens/day.
 /// </summary>
 public class GeminiAiService : IAiService
 {
     private readonly HttpClient _httpClient;
-    private const string GeminiEndpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+
+    // Models to try in order (fallback if primary model unavailable)
+    private static readonly string[] Models = new[]
+    {
+        "gemini-2.0-flash",
+        "gemini-2.0-flash-lite"
+    };
+
+    private const string BaseEndpoint = "https://generativelanguage.googleapis.com/v1beta/models";
 
     public GeminiAiService()
     {
@@ -18,15 +27,16 @@ public class GeminiAiService : IAiService
         {
             Timeout = TimeSpan.FromSeconds(30)
         };
+
+        // Clear any previously stored user key so the built-in key is always used
+        try { Preferences.Remove("GeminiApiKey"); } catch { }
     }
 
-    public bool IsConfigured => true; // Always configured with built-in key
+    public bool IsConfigured => true;
 
     public async Task<string> SendMessageAsync(string userMessage, string systemContext = "")
     {
-        var apiKey = GetApiKey();
-        if (string.IsNullOrEmpty(apiKey))
-            return "AI Coach is not configured yet. Please add your Gemini API key in Settings.";
+        var apiKey = AppConfig.GeminiApiKey;
 
         try
         {
@@ -54,28 +64,37 @@ public class GeminiAiService : IAiService
                 }
             };
 
-            var url = $"{GeminiEndpoint}?key={apiKey}";
-            var response = await _httpClient.PostAsJsonAsync(url, requestBody);
-
-            if (!response.IsSuccessStatusCode)
+            // Try each model until one works
+            foreach (var model in Models)
             {
+                var url = $"{BaseEndpoint}/{model}:generateContent?key={apiKey}";
+                var response = await _httpClient.PostAsJsonAsync(url, requestBody);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var doc = JsonDocument.Parse(json);
+
+                    var text = doc.RootElement
+                        .GetProperty("candidates")[0]
+                        .GetProperty("content")
+                        .GetProperty("parts")[0]
+                        .GetProperty("text")
+                        .GetString();
+
+                    return text ?? "I didn't get a response. Please try again.";
+                }
+
                 var error = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"Gemini API error: {error}");
-                return "Sorry, I couldn't process your request right now. Please try again later.";
+                Console.WriteLine($"Gemini API error ({model}, {response.StatusCode}): {error}");
+
+                // If it's a 404 (model not found), try next model
+                // For other errors (rate limit, auth), don't retry with different model
+                if (response.StatusCode != System.Net.HttpStatusCode.NotFound)
+                    break;
             }
 
-            var json = await response.Content.ReadAsStringAsync();
-            var doc = JsonDocument.Parse(json);
-
-            // Extract text from Gemini response
-            var text = doc.RootElement
-                .GetProperty("candidates")[0]
-                .GetProperty("content")
-                .GetProperty("parts")[0]
-                .GetProperty("text")
-                .GetString();
-
-            return text ?? "I didn't get a response. Please try again.";
+            return "Sorry, I couldn't process your request right now. Please try again later.";
         }
         catch (TaskCanceledException)
         {
@@ -86,29 +105,5 @@ public class GeminiAiService : IAiService
             Console.WriteLine($"Gemini error: {ex.Message}");
             return "Something went wrong. Please try again later.";
         }
-    }
-
-    /// <summary>
-    /// Get the API key. Uses user-configured key if available, otherwise falls back to built-in key.
-    /// </summary>
-    private string GetApiKey()
-    {
-        try
-        {
-            var userKey = Preferences.Get("GeminiApiKey", "");
-            if (!string.IsNullOrEmpty(userKey))
-                return userKey;
-        }
-        catch { }
-
-        return AppConfig.GeminiApiKey;
-    }
-
-    /// <summary>
-    /// Save the API key to secure storage.
-    /// </summary>
-    public static void SetApiKey(string apiKey)
-    {
-        Preferences.Set("GeminiApiKey", apiKey);
     }
 }

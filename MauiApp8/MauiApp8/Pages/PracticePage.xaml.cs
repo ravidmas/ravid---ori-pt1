@@ -128,40 +128,133 @@ public partial class PracticePage : ContentPage
             return;
         }
 
-        _isRecording = true;
-        ResultPanel.IsVisible = false;
+        try
+        {
+            // Check permission first with user-visible feedback
+            var permStatus = await Permissions.CheckStatusAsync<Permissions.Microphone>();
+            if (permStatus != PermissionStatus.Granted)
+            {
+                permStatus = await Permissions.RequestAsync<Permissions.Microphone>();
+                if (permStatus != PermissionStatus.Granted)
+                {
+                    await DisplayAlert("Permission Required",
+                        "Microphone access is needed to detect chords. Please enable it in your device settings.", "OK");
+                    return;
+                }
+            }
 
-        // Visual feedback - recording state
-        RecordButtonFrame.BackgroundColor = Colors.Red;
-        RecordButtonIcon.Text = "\u23F9"; // Stop icon
-        StatusLabel.Text = "Recording... Play the chord now!";
+            _isRecording = true;
+            ResultPanel.IsVisible = false;
+            _audioService.StopPlayback();
 
-        var started = await _audioService.StartRecordingAsync();
-        if (!started)
+            // Visual feedback - recording state
+            RecordButtonFrame.BackgroundColor = Colors.Red;
+            RecordButtonIcon.Text = "\u23F9"; // Stop icon
+            StatusLabel.Text = "Recording... Play the chord now!";
+
+            var started = await _audioService.StartRecordingAsync();
+            if (!started)
+            {
+                _isRecording = false;
+                RecordButtonFrame.BackgroundColor = (Color)Application.Current!.Resources["ErrorRed"];
+                RecordButtonIcon.Text = "\uD83C\uDFA4"; // Mic icon
+                StatusLabel.Text = "Failed to start recording. Check microphone permission.";
+                return;
+            }
+
+            // Auto-stop after 3 seconds with countdown
+            _recordingCts = new CancellationTokenSource();
+            _ = RunRecordingCountdown(_recordingCts.Token);
+        }
+        catch (Exception ex)
         {
             _isRecording = false;
-            RecordButtonFrame.BackgroundColor = (Color)Application.Current!.Resources["ErrorRed"];
-            RecordButtonIcon.Text = "\uD83C\uDFA4"; // Mic icon
-            StatusLabel.Text = "Failed to start recording. Check microphone permission.";
-            return;
+            StatusLabel.Text = $"Recording error: {ex.Message}";
+            Console.WriteLine($"Recording error: {ex}");
         }
-
-        // Auto-stop after 3 seconds with countdown
-        _recordingCts = new CancellationTokenSource();
-        _ = RunRecordingCountdown(_recordingCts.Token);
     }
 
     private async Task RunRecordingCountdown(CancellationToken ct)
     {
         try
         {
-            for (int i = 3; i > 0; i--)
+            // 5-second countdown with early chord detection every second
+            for (int i = 5; i > 0; i--)
             {
                 if (ct.IsCancellationRequested) return;
                 RecordTimerLabel.Text = $"{i}...";
                 await Task.Delay(1000, ct);
+                if (ct.IsCancellationRequested) return;
+
+                // After at least 1 second of recording, try to detect chord early
+                if (i <= 4) // skip the very first second (too little data)
+                {
+                    // Stop recording to read audio data
+                    var stopped = await _audioService.StopRecordingAsync();
+                    if (!stopped) continue;
+
+                    var pcmBytes = _audioService.GetLastRecordingPcmBytes();
+                    ChordDetectionResult? result = null;
+
+                    if (pcmBytes != null && pcmBytes.Length > 0)
+                    {
+                        var sampleRate = _audioService.LastRecordingSampleRate;
+                        result = await Task.Run(() =>
+                            _chordDetectionService.DetectChord(pcmBytes, sampleRate));
+
+                        // If chord detected with reasonable confidence, stop early
+                        if (result.Confidence >= 0.3 && result.DetectedChordName != "Unknown"
+                            && result.DetectedChordName != "No sound detected")
+                        {
+                            _isRecording = false;
+                            RecordButtonFrame.BackgroundColor = (Color)Application.Current!.Resources["ErrorRed"];
+                            RecordButtonIcon.Text = "\uD83C\uDFA4";
+                            RecordTimerLabel.Text = "";
+                            StatusLabel.Text = "Chord detected!";
+                            LoadingIndicator.IsRunning = true;
+                            LoadingIndicator.IsVisible = true;
+                            ShowResult(result);
+                            return;
+                        }
+                    }
+
+                    // Last iteration — show whatever we got (even low confidence)
+                    if (i == 1)
+                    {
+                        _isRecording = false;
+                        RecordButtonFrame.BackgroundColor = (Color)Application.Current!.Resources["ErrorRed"];
+                        RecordButtonIcon.Text = "\uD83C\uDFA4";
+                        RecordTimerLabel.Text = "";
+                        LoadingIndicator.IsRunning = true;
+                        LoadingIndicator.IsVisible = true;
+                        if (result != null)
+                        {
+                            ShowResult(result);
+                        }
+                        else
+                        {
+                            StatusLabel.Text = "Could not detect audio. Try again.";
+                            LoadingIndicator.IsRunning = false;
+                            LoadingIndicator.IsVisible = false;
+                        }
+                        return;
+                    }
+
+                    // No chord yet — restart recording for the next second
+                    var restarted = await _audioService.StartRecordingAsync();
+                    if (!restarted)
+                    {
+                        _isRecording = false;
+                        RecordTimerLabel.Text = "";
+                        StatusLabel.Text = "Recording error. Try again.";
+                        RecordButtonFrame.BackgroundColor = (Color)Application.Current!.Resources["ErrorRed"];
+                        RecordButtonIcon.Text = "\uD83C\uDFA4";
+                        return;
+                    }
+                }
             }
 
+            // Fallback: if we get here (only first second passed), do normal stop and analyze
             if (!ct.IsCancellationRequested)
             {
                 RecordTimerLabel.Text = "";
@@ -179,44 +272,57 @@ public partial class PracticePage : ContentPage
         _recordingCts?.Dispose();
         _recordingCts = null;
 
-        // Stop recording
-        var stopped = await _audioService.StopRecordingAsync();
-        _isRecording = false;
-
-        // Reset visual state
-        RecordButtonFrame.BackgroundColor = (Color)Application.Current!.Resources["ErrorRed"];
-        RecordButtonIcon.Text = "\uD83C\uDFA4"; // Mic icon
-        RecordTimerLabel.Text = "";
-
-        if (!stopped)
+        try
         {
-            StatusLabel.Text = "Recording failed. Tap to try again.";
-            return;
-        }
+            // Stop recording
+            var stopped = await _audioService.StopRecordingAsync();
+            _isRecording = false;
 
-        // Analyze the recording
-        StatusLabel.Text = "Analyzing...";
-        LoadingIndicator.IsRunning = true;
-        LoadingIndicator.IsVisible = true;
+            // Reset visual state
+            RecordButtonFrame.BackgroundColor = (Color)Application.Current!.Resources["ErrorRed"];
+            RecordButtonIcon.Text = "\uD83C\uDFA4"; // Mic icon
+            RecordTimerLabel.Text = "";
 
-        await Task.Run(() =>
-        {
-            var pcmBytes = _audioService.GetLastRecordingPcmBytes();
-            if (pcmBytes != null && pcmBytes.Length > 0)
+            if (!stopped)
             {
-                var result = _chordDetectionService.DetectChord(pcmBytes);
-                MainThread.BeginInvokeOnMainThread(() => ShowResult(result));
+                StatusLabel.Text = "Recording failed. Tap to try again.";
+                return;
             }
-            else
+
+            // Analyze the recording
+            StatusLabel.Text = "Analyzing...";
+            LoadingIndicator.IsRunning = true;
+            LoadingIndicator.IsVisible = true;
+
+            await Task.Run(() =>
             {
-                MainThread.BeginInvokeOnMainThread(() =>
+                var pcmBytes = _audioService.GetLastRecordingPcmBytes();
+                if (pcmBytes != null && pcmBytes.Length > 0)
                 {
-                    StatusLabel.Text = "Could not read audio data. Try again.";
-                    LoadingIndicator.IsRunning = false;
-                    LoadingIndicator.IsVisible = false;
-                });
-            }
-        });
+                    var sampleRate = _audioService.LastRecordingSampleRate;
+                    Console.WriteLine($"Analyzing {pcmBytes.Length} PCM bytes at {sampleRate} Hz");
+                    var result = _chordDetectionService.DetectChord(pcmBytes, sampleRate);
+                    MainThread.BeginInvokeOnMainThread(() => ShowResult(result));
+                }
+                else
+                {
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        StatusLabel.Text = $"Could not read audio data ({_audioService.RecordedFilePath}). Try again.";
+                        LoadingIndicator.IsRunning = false;
+                        LoadingIndicator.IsVisible = false;
+                    });
+                }
+            });
+        }
+        catch (Exception ex)
+        {
+            _isRecording = false;
+            StatusLabel.Text = $"Analysis error: {ex.Message}";
+            LoadingIndicator.IsRunning = false;
+            LoadingIndicator.IsVisible = false;
+            Console.WriteLine($"StopRecordingAndAnalyze error: {ex}");
+        }
     }
 
     private async void ShowResult(ChordDetectionResult result)
@@ -378,6 +484,7 @@ public partial class PracticePage : ContentPage
     {
         base.OnDisappearing();
         _recordingCts?.Cancel();
+        _audioService.StopPlayback();
 
         if (_isRecording)
         {

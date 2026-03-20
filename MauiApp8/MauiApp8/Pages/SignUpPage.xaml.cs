@@ -55,9 +55,12 @@ public partial class SignUpPage : ContentPage
             Preferences.Set("UserEmail", user.Email);
             Preferences.Set("JoinDate", user.CreatedAt.ToString("yyyy-MM-dd"));
 
+            var services = Handler?.MauiContext?.Services
+                ?? Application.Current?.Handler?.MauiContext?.Services;
+            var mainPage = services?.GetService<MainPage>() ?? new MainPage();
+
             if (Application.Current != null)
-                Application.Current.Windows[0].Page = new NavigationPage(
-                    Handler?.MauiContext?.Services.GetService<MainPage>() ?? new MainPage());
+                Application.Current.Windows[0].Page = new NavigationPage(mainPage);
         }
     }
 

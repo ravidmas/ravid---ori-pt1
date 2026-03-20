@@ -25,25 +25,36 @@ public partial class LoginPage : ContentPage
             return;
         }
 
-        var passwordHash = HashPassword(password);
-        var user = await _database.AuthenticateUserAsync(email, passwordHash);
-
-        if (user == null)
+        try
         {
-            ShowError("Invalid email or password.");
-            return;
+            var passwordHash = HashPassword(password);
+            var user = await _database.AuthenticateUserAsync(email, passwordHash);
+
+            if (user == null)
+            {
+                ShowError("Invalid email or password.");
+                return;
+            }
+
+            // Save logged-in user info
+            Preferences.Set("LoggedInUserId", user.UserId);
+            Preferences.Set("UserDisplayName", user.DisplayName);
+            Preferences.Set("UserEmail", user.Email);
+            Preferences.Set("JoinDate", user.CreatedAt.ToString("yyyy-MM-dd"));
+
+            // Navigate to main app using DI
+            var services = Handler?.MauiContext?.Services
+                ?? Application.Current?.Handler?.MauiContext?.Services;
+            var mainPage = services?.GetService<MainPage>() ?? new MainPage();
+
+            if (Application.Current != null)
+                Application.Current.Windows[0].Page = new NavigationPage(mainPage);
         }
-
-        // Save logged-in user info
-        Preferences.Set("LoggedInUserId", user.UserId);
-        Preferences.Set("UserDisplayName", user.DisplayName);
-        Preferences.Set("UserEmail", user.Email);
-        Preferences.Set("JoinDate", user.CreatedAt.ToString("yyyy-MM-dd"));
-
-        // Navigate to main app
-        if (Application.Current != null)
-            Application.Current.Windows[0].Page = new NavigationPage(
-                Handler?.MauiContext?.Services.GetService<MainPage>() ?? new MainPage());
+        catch (Exception ex)
+        {
+            ShowError($"Login error: {ex.Message}");
+            Console.WriteLine($"Login error: {ex}");
+        }
     }
 
     private async void OnSignUpTapped(object sender, EventArgs e)

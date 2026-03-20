@@ -8,6 +8,7 @@ public interface IAudioService : IDisposable
     bool IsRecording { get; }
     bool HasRecording { get; }
     string RecordedFilePath { get; }
+    int LastRecordingSampleRate { get; }
 
     Task<bool> StartRecordingAsync();
     Task<bool> StopRecordingAsync();

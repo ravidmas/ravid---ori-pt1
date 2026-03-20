@@ -16,6 +16,7 @@ public class AudioService : IAudioService
     public bool IsRecording => _audioRecorder?.IsRecording ?? false;
     public bool HasRecording => !string.IsNullOrEmpty(_recordedFilePath) && File.Exists(_recordedFilePath);
     public string RecordedFilePath => _recordedFilePath ?? string.Empty;
+    public int LastRecordingSampleRate { get; private set; } = 44100;
 
     public event EventHandler<string>? RecordingStatusChanged;
     public event EventHandler<string>? PlaybackStatusChanged;
@@ -202,8 +203,8 @@ public class AudioService : IAudioService
     }
 
     /// <summary>
-    /// Reads the last recorded WAV file, strips the 44-byte header,
-    /// and returns raw PCM 16-bit mono bytes for FFT analysis.
+    /// Reads the last recorded WAV file, parses the header to get format info,
+    /// converts stereo to mono if needed, and returns raw PCM 16-bit mono bytes for FFT analysis.
     /// </summary>
     public byte[]? GetLastRecordingPcmBytes()
     {
@@ -214,8 +215,7 @@ public class AudioService : IAudioService
 
             var allBytes = File.ReadAllBytes(_recordedFilePath!);
 
-            // Standard WAV header is 44 bytes
-            // Verify it's a WAV file by checking the RIFF header
+            // Standard WAV header is at least 44 bytes
             if (allBytes.Length < 44)
                 return null;
 
@@ -226,7 +226,32 @@ public class AudioService : IAudioService
                 return allBytes;
             }
 
-            // Find the "data" chunk - it might not always be at byte 36
+            // Parse WAV format from "fmt " chunk
+            int numChannels = 1;
+            int bitsPerSample = 16;
+            int wavSampleRate = 44100;
+            int fmtOffset = 12;
+
+            while (fmtOffset < allBytes.Length - 8)
+            {
+                string fmtChunkId = System.Text.Encoding.ASCII.GetString(allBytes, fmtOffset, 4);
+                int fmtChunkSize = BitConverter.ToInt32(allBytes, fmtOffset + 4);
+
+                if (fmtChunkId == "fmt ")
+                {
+                    numChannels = BitConverter.ToInt16(allBytes, fmtOffset + 10);
+                    wavSampleRate = BitConverter.ToInt32(allBytes, fmtOffset + 12);
+                    bitsPerSample = BitConverter.ToInt16(allBytes, fmtOffset + 22);
+                    LastRecordingSampleRate = wavSampleRate;
+                    Console.WriteLine($"WAV format: {numChannels} ch, {wavSampleRate} Hz, {bitsPerSample} bit");
+                    break;
+                }
+
+                fmtOffset += 8 + fmtChunkSize;
+                if (fmtChunkSize % 2 != 0) fmtOffset++;
+            }
+
+            // Find the "data" chunk
             int dataOffset = 12; // Skip past RIFF header
             while (dataOffset < allBytes.Length - 8)
             {
@@ -235,17 +260,21 @@ public class AudioService : IAudioService
 
                 if (chunkId == "data")
                 {
-                    // Found the data chunk, skip the chunk header (8 bytes)
                     int pcmStart = dataOffset + 8;
                     int pcmLength = Math.Min(chunkSize, allBytes.Length - pcmStart);
-                    var pcmBytes = new byte[pcmLength];
-                    Array.Copy(allBytes, pcmStart, pcmBytes, 0, pcmLength);
-                    return pcmBytes;
+                    var rawPcm = new byte[pcmLength];
+                    Array.Copy(allBytes, pcmStart, rawPcm, 0, pcmLength);
+
+                    // Convert stereo to mono if needed
+                    if (numChannels == 2 && bitsPerSample == 16)
+                    {
+                        return ConvertStereoToMono16(rawPcm);
+                    }
+
+                    return rawPcm;
                 }
 
-                // Move to next chunk (chunk header = 8 bytes + chunk data)
                 dataOffset += 8 + chunkSize;
-                // Chunks are word-aligned
                 if (chunkSize % 2 != 0) dataOffset++;
             }
 
@@ -259,6 +288,32 @@ public class AudioService : IAudioService
             ErrorOccurred?.Invoke(this, $"Failed to read PCM data: {ex.Message}");
             return null;
         }
+    }
+
+    /// <summary>
+    /// Convert stereo PCM 16-bit to mono by averaging left and right channels.
+    /// </summary>
+    private static byte[] ConvertStereoToMono16(byte[] stereoBytes)
+    {
+        int sampleCount = stereoBytes.Length / 4; // 2 bytes per sample * 2 channels
+        var monoBytes = new byte[sampleCount * 2];
+
+        for (int i = 0; i < sampleCount; i++)
+        {
+            int stereoOffset = i * 4;
+            if (stereoOffset + 3 >= stereoBytes.Length) break;
+
+            short left = BitConverter.ToInt16(stereoBytes, stereoOffset);
+            short right = BitConverter.ToInt16(stereoBytes, stereoOffset + 2);
+            short mono = (short)((left + right) / 2);
+
+            var monoSampleBytes = BitConverter.GetBytes(mono);
+            monoBytes[i * 2] = monoSampleBytes[0];
+            monoBytes[i * 2 + 1] = monoSampleBytes[1];
+        }
+
+        Console.WriteLine($"Converted stereo ({stereoBytes.Length} bytes) to mono ({monoBytes.Length} bytes)");
+        return monoBytes;
     }
 
     public void Dispose()
